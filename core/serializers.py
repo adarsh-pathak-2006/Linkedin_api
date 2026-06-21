@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import post, profile
+from .models import post, profile, comment
 
 class homefeed_serializer(ModelSerializer):
     class Meta:
@@ -16,3 +16,12 @@ class profile_serializer(ModelSerializer):
         model=profile
         fields=['headline', 'bio', 'location']
 
+class comment_view(ModelSerializer):
+    class Meta:
+        model=comment
+        fields=['content','author', 'created_at']
+
+class Comment_add(ModelSerializer):
+    class Meta:
+        model=comment
+        fields=['comment']
