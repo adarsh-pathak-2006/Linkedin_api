@@ -3,6 +3,28 @@ from rest_framework.views import APIView
 from .models import post, profile, comment
 from .serializers import homefeed_serializer, CreatePost_serializer, profile_serializer, comment_view, Comment_add
 from rest_framework.response import Response
+from django.views import View
+from .forms import registerform
+from django.contrib.auth.models import User
+
+class RegisterView(View):
+    def get(self, request):
+        form=registerform
+        return render(request, 'register.html', { 'form':form })
+
+    def post(self, request):
+        form_data=registerform(request.POST)
+        if form_data.is_valid():
+            name=form_data.cleaned_data['username']
+            pass1=form_data.cleaned_data['password']
+            pass2=form_data.changed_data['rep_password']
+
+            if pass1==pass2:
+                if User.objects.filter(username=name).exists:
+                    return render(request, 'register.html', { 'user_err':'user already exist' })
+                else:
+                    user=User.objects.create_user(username=name, password=pass1)
+                    return redirect('register')
 
 
 class HomeFeed(APIView):
@@ -45,6 +67,8 @@ class Profile_view(APIView):
         data=profile.objects.filter(user=request.user)
         serial=profile_serializer(data)
         return Response(serial.data)
+    
+
 
     
 
