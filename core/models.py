@@ -32,9 +32,10 @@ class profile(models.Model):
     headline=models.CharField(max_length=300)
     bio=models.TextField()
     location=models.CharField(max_length=100)
-    skill=models.ForeignKey(skills, on_delete=models.CASCADE, null=True)
+    skill=models.ManyToManyField(skills, null=True)
     
 
     def __str__(self):
         return self.user.username
-    
+
+
