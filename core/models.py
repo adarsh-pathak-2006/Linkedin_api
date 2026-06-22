@@ -19,12 +19,20 @@ class comment(models.Model):
 
     def __str__(self):
         return self.post
+    
+class skills(models.Model):
+    name=models.CharField(max_length=100, primary_key=True)
+
+    def __str__(self):
+        return self.name
+    
 
 class profile(models.Model):
     user=models.OneToOneField(User, on_delete=models.CASCADE)
     headline=models.CharField(max_length=300)
     bio=models.TextField()
-    location=models.CharField()
+    location=models.CharField(max_length=100)
+    skill=models.ForeignKey(skills, on_delete=models.CASCADE, null=True)
     
 
     def __str__(self):
