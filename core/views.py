@@ -7,6 +7,8 @@ from django.views import View
 from .forms import registerform
 from django.contrib.auth.models import User
 
+
+
 class RegisterView(View):
     def get(self, request):
         form=registerform
@@ -17,22 +19,31 @@ class RegisterView(View):
         if form_data.is_valid():
             name=form_data.cleaned_data['username']
             pass1=form_data.cleaned_data['password']
-            pass2=form_data.changed_data['rep_password']
+            pass2=form_data.cleaned_data['rep_password']
 
             if pass1==pass2:
-                if User.objects.filter(username=name).exists:
+                if User.objects.filter(username=name).exists():
                     return render(request, 'register.html', { 'user_err':'user already exist' })
                 else:
-                    user=User.objects.create_user(username=name, password=pass1)
+                    User.objects.create_user(username=name, password=pass1)
                     return redirect('register')
-
+            else:
+                return render(request, 'register.html', { 'pass_err':'enter the same password in both the password fields' })
+        else:
+            return render(request, 'register.html', { 'invalid':'invalid input' })
 
 class HomeFeed(APIView):
     def get(self, request):
         data=post.objects.all()
         serial=homefeed_serializer(data, many=True)
         return Response(serial.data)
-
+    
+class individualpost(APIView):
+    def get(self, request, pk):
+        data=get_object_or_404(post, id=pk)
+        serial=homefeed_serializer(data)
+        return Response(serial.data)
+            
 
 class CommentView(APIView):
     def get(self, request, pk):
@@ -64,7 +75,7 @@ class CreatePost(APIView):
 
 class Profile_view(APIView):
     def get(self, request):
-        data=profile.objects.filter(user=request.user)
+        data=profile.objects.get(user=request.user)
         serial=profile_serializer(data)
         return Response(serial.data)
     

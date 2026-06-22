@@ -24,4 +24,4 @@ class comment_view(ModelSerializer):
 class Comment_add(ModelSerializer):
     class Meta:
         model=comment
-        fields=['comment']
+        fields=['content']
